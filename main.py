@@ -1,16 +1,35 @@
-# This is a sample Python script.
+import asyncio
+import os
 
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
+from aiogram import Bot, Dispatcher
+from aiogram import types
+from aiogram.fsm.storage.memory import MemoryStorage
 
+import database as db
+import handlers
+from scheduler import create_scheduler
+from keyboards import main_kb
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
+BOT_TOKEN = os.getenv('BOT_TOKEN')
 
+async def main() -> None:
+    await db.init_db()
 
-# Press the green button in the gutter to run the script.
+    bot = Bot(BOT_TOKEN, parse_mode='HTML')
+    bot.owner_id = (await bot.get_me()).id
+
+    dp = Dispatcher(storage=MemoryStorage())
+    dp.include_router(handlers.router)
+
+    scheduler = create_scheduler(bot)
+    scheduler.start()
+
+    @dp.message(commands=['start'])
+    async def cmd_start(message: types.Message):
+        await message.answer('Привет! Я бот для трекинга эмоций.', reply_markup=main_kb)
+
+    await dp.start_polling(bot)
+
 if __name__ == '__main__':
-    print_hi('PyCharm')
+    asyncio.run(main())
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
