@@ -1,14 +1,24 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
-main_kb = ReplyKeyboardMarkup(resize_keyboard=True)
-main_kb.add(
-    KeyboardButton('📌 Добавить событие дня'),
-    KeyboardButton('✏️ Изменить событие дня'),
-)
-main_kb.add(
-    KeyboardButton('📆 Посмотреть события недели'),
-    KeyboardButton('🌟 Посмотреть лучшие события недели'),
-)
-main_kb.add(
-    KeyboardButton('🏆 Посмотреть лучшие события месяца')
+# In aiogram v3, ReplyKeyboardMarkup expects the keyboard layout to be
+# provided on initialization. The previous approach using ``add``
+# corresponds to the old builder API from aiogram v2 and leads to a
+# validation error.  Here we explicitly pass the keyboard structure as a
+# nested list of ``KeyboardButton`` objects.
+
+main_kb = ReplyKeyboardMarkup(
+    keyboard=[
+        [
+            KeyboardButton(text='📌 Добавить событие дня'),
+            KeyboardButton(text='✏️ Изменить событие дня'),
+        ],
+        [
+            KeyboardButton(text='📆 Посмотреть события недели'),
+            KeyboardButton(text='🌟 Посмотреть лучшие события недели'),
+        ],
+        [
+            KeyboardButton(text='🏆 Посмотреть лучшие события месяца'),
+        ],
+    ],
+    resize_keyboard=True,
 )
