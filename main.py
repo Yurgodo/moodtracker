@@ -3,6 +3,7 @@ import os
 
 from aiogram import Bot, Dispatcher
 from aiogram import types
+from aiogram.client.default import DefaultBotProperties
 from aiogram.fsm.storage.memory import MemoryStorage
 
 import database as db
@@ -15,7 +16,7 @@ BOT_TOKEN = os.getenv('BOT_TOKEN')
 async def main() -> None:
     await db.init_db()
 
-    bot = Bot(BOT_TOKEN, parse_mode='HTML')
+    bot = Bot(BOT_TOKEN, default=DefaultBotProperties(parse_mode='HTML'))
     bot.owner_id = (await bot.get_me()).id
 
     dp = Dispatcher(storage=MemoryStorage())
